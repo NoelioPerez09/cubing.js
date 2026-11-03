@@ -317,6 +317,13 @@ export class TwistyPlayerModel {
           this.alg.get(),
           this.puzzleLoader.get(),
         ]);
+        // Ignore moves that are invalid for the current puzzle. 
+        try {
+          (await puzzleLoader.kpuzzle()).moveToTransformation(move);
+        } catch (e) {
+          console.warn("Ignoring invalid move for puzzle:", move.toString(), e);
+          return alg;
+        }
         const newAlg = experimentalAppendMove(alg, move, {
           ...options,
           ...(await getPartialAppendOptionsForPuzzleSpecificSimplifyOptions(
